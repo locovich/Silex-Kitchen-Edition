@@ -11,4 +11,10 @@ $post->addColumn('id', 'integer', array('unsigned' => true, 'autoincrement' => t
 $post->addColumn('title', 'string', array('length' => 32));
 $post->setPrimaryKey(array('id'));
 
+$click = $schema->createTable('click');
+$click->addColumn('id', 'integer', array('unsigned' => true, 'autoincrement' => true));
+$click->addColumn('title', 'string', array('length' => 32));
+$click->addColumn('created', 'datetime');
+$click->setPrimaryKey(array('id'));
+
 return $schema;

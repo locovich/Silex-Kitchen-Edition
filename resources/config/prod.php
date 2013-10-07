@@ -1,10 +1,12 @@
 <?php
 
 // Local
-$app['locale'] = 'fr';
+$app['locale'] = 'es';
 $app['session.default_locale'] = $app['locale'];
 $app['translator.messages'] = array(
     'fr' => __DIR__.'/../resources/locales/fr.yml',
+    'es' => __DIR__.'/../resources/locales/es.yml',
+    'en' => __DIR__.'/../resources/locales/en.yml',
 );
 
 // Cache
@@ -35,10 +37,10 @@ $app['assetic.output.path_to_js']       = 'js/scripts.js';
 $app['db.options'] = array(
     'driver'   => 'pdo_mysql',
     'host'     => 'localhost',
-    'dbname'   => 'silex_kitchen',
-    'user'     => 'root',
-    'password' => '',
+    'dbname'   => 'slx',
+    'user'     => 'slx_user',
+    'password' => 'oa78tlkg7aLS/G)',
 );
 
 // User
-$app['security.users'] = array('username' => array('ROLE_USER', 'password'));
+$app['security.users'] = array('nicolas' => array('ROLE_USER', 'LaPiroca'));
