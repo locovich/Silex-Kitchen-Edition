@@ -9,6 +9,7 @@ $app = new Silex\Application();
 require __DIR__.'/../resources/config/dev.php';
 require __DIR__.'/../src/app.php';
 
-require __DIR__.'/../src/controllers.php';
+//require __DIR__.'/../src/controllers.php';
+require __DIR__.'/../src/routes.php';
 
 $app->run();
