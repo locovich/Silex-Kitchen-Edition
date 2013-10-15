@@ -1,0 +1,297 @@
+{% extends 'bookLayout.html.twig' %}
+{% set active = 'book1' %}
+
+{% block content %}
+<script type="text/javascript">
+	function ajax_submit_click(form)
+	{
+		var str = $(form).serialize();
+		$.ajax({
+			type: "POST",
+			url: "click",
+			data: str,
+			success: function(msg) {
+				alert(msg);
+				return true;
+			},
+			error: function(msg) {
+				alert(msg);
+				return true;
+			},
+		});
+		return true;
+	}
+
+	$(document).ready(function(){
+		$("#ajax-contact-form").submit(function() {
+			var str = $(this).serialize();
+			$.ajax({
+				type: "POST",
+				url: "contact",
+				data: str,
+				success: function(msg) {
+					alert(msg)
+					// Message Sent - Show the 'Thank You' message and hide the form
+					if(msg == 'OK') {
+						result = '<div class="notification_ok">Your message has been sent. Thank you!</div>';
+						$("#fields").hide();
+					} else {
+						result = msg;
+					}
+					$('#note').html(result);
+				},
+				error: function(msg) {
+					alert(msg)
+				},
+			});
+			return false;
+		});
+		$("#mercadolibre-form").submit(function() {
+			return ajax_submit_click($(this));
+		});
+		$("#dineromail-form").submit(function() {
+			return ajax_submit_click($(this));
+		});
+		$("#paypal-form").submit(function() {
+			return ajax_submit_click($(this));
+		});
+	});
+</script>
+
+<div class="menu">
+	<div class="container clearfix">
+
+		<div id="logo" class="fleft">
+			<a href="javascript:void(0);"><img class="logo_big" src="img/logo.png"><img class="logo_small" src="img/logo_small.png"></a>
+		</div>
+
+		<div id="precio-font" class="fleft precio-box">&iexcl;S&oacute;lo&nbsp;&nbsp;u$d {{ app.libro1.precio }}!</div>
+
+		<div id="nav" class="fright">
+			<ul class="navigation">
+				<li data-slide="1">Inicio</li>
+				<li data-slide="2">&iquest;Por qu&eacute;?</li>
+				<li data-slide="4">&iquest;C&oacute;mo?</li>
+				<li data-slide="5">&iquest;Dudas?</li>
+				<li data-slide="6">Comprar</li>
+				<li data-slide="10">Contacto</li>
+			</ul>
+		</div>
+
+	</div>
+</div>
+
+
+<div class="slide" id="slide1" data-slide="1" data-stellar-background-ratio="0.5">
+	<div class="effect_2 padding_slide1">
+		<div class="container clearfix">
+			<div id="content" class="grid_12" style="margin-top:-70px">
+				<div class="filtr_bg">
+					<h2 style="font-size:1.8em">Organiza tu men&uacute; y compras del mercado de toda una semana con el</h2>
+					<h1>Plan de Recetas Semanal</h1>
+					<div class="bord_in_red"></div>
+					<p>Desayuno, Almuerzo, Merienda y Cena<br>
+					Con tips y cantidades precisas para todos los d&iacute;as</p>
+				</div>
+				<div class='contenido'>
+				<a style="margin-top:-100px" class="button" title="" data-slide="6">Comprar</a>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="slide" id="slide2" data-slide="2" data-stellar-background-ratio="0.5">
+	<div class="container clearfix">
+		<div id="content" class="grid_12">
+			<h1>&iquest;Por qu&eacute; querr&iacute;a un Plan como este?</h1>
+			<h2>Si sos una persona que suele ocuparse de cocinar y hacer las compras en el mercado, seguramente sabr&aacute;s a qu&eacute; nos referimos cuando hablamos de la preocupaci&oacute;n y estr&eacute;s que genera llevar el menu y cocinar todos los d&iacute;as.</h2>
+			<img class="icon_img" src="img/icon10.png" />
+		</div>
+		<div id="content" class="grid_12">
+			<h4>&iquest;Que vamos a comer? &iquest;Que puedo cocinar que sea rico y sano? &iquest;Que comida preparo que no sea lo de siempre?</h4>
+			<p>Seguramente estas son preguntas que te haces diariamente, y te cuesta responder. Cada semana que pasa te estresa más enfrentarlas y encontrar respuestas. Al igual que tu, nosotros reconocemos y sentimos este molestia y preocupación cuando se acerca la hora de comer y tienes que resolver el menú, y al pensar en las compras a realizar en el mercado.</p>
+			<p>Cuando reconocimos esta molestia, que tu sientes también, es que decidimos <span class="n">hacer algo al respecto.</span></p>
+			<p>Sabemos que lo ideal sería poder disponer de mucho tiempo, dinero y energía para desaparecer estas preocupaciones. Así, podrías enfocar la energía que gastas semanalmente al estar preocupada por el menú, y la lista del mercado en actividades que te gusten, que te den satisfacción. Contratar un chef, ordenar comida a restaurantes todos los dias o ir a una escuela de cocina son algunas opciones que muchos no podemos afrontar. Con el ritmo y exigencias de la vida simplemente no podemos disponer del dinero o el tiempo para elegir esas soluciones.</p>
+			<p>Pero si uno realmente lo desea, siempre se puede encontrar una manera de mejorar. Imagínate que tu lista del mercado ya esta escrita. Imaginate que ya sabes que vas a preparar para comer el resto de la semana, almuerzo, cena y snacks para el dia. <span class="n">No más estrés</span>, no más pensar que puedo cocinar para la próxima comida. Imagínate que puedes organizar en solo 5 minutos los días y momentos en que cocinaras, <span class="n">liberando el resto de tu tiempo libre de toda la semana</span> para realizar las actividades que quieras. No seria buenisimo!?</p>
+			<p>Para ti, nosotros y todos los que se identifican con esas preocupaciones, es que armamos este libro: "Plan de recetas semanal". Nuestro libro electrónico te propone soluciones a estos problemas, quitando de tus hombros el peso de decidir diariamente que cocinar, y decidir la lista del mercado para toda una semana.</p>
+		</div>
+	</div>
+</div>
+
+
+
+<div class="slide" id="slide3" data-slide="3" data-stellar-background-ratio="0.5">
+	<div class="effect_2">
+		<div class="container clearfix">
+
+			<div id="content" class="grid_12">
+				<p>Siéntete satisfecha con tus platos, disfruta comida de la mejor calidad: La que tu preparas!</p>
+			</div>
+
+		</div>
+	</div>
+</div>
+
+
+
+<div class="slide" id="slide4" data-slide="4" data-stellar-background-ratio="0.5">
+	<div class="container clearfix">
+		<div id="content" class="grid_12">
+			<h1><span>Como me va a ayudar el libro?</span></h1>
+			<p>El Plan te ofrece <span class="n">organización inmediata para tu cocina</span>, desde los utensilios que necesitarás, hasta las compras a realizar, y las recetas para cada comida.</p>
+			<p>También te ofrece opciones para desayuno y snacks para cada dia!</p>
+			<p>Todo estos beneficios y también saber que estás preparando <span class="n">comida saludable y rica</span> hacen del Plan una <span class="n">gran inversion</span>.</p>
+			<p>Siguiendo el plan vas a conseguir más tiempo libre, tranquilidad mental cada vez que tengas que empezar a cocinar, comparte más tiempo con tus niños, tu pareja y tus amigos.</p>
+			<p>Además de todos estos beneficios inmediatos, también incluimos muchos tips! Como hacer cada receta a tu gusto, y muy sabrosa, saludable y rápidamente.</p>
+			<p>Con solo seguir el Plan vas a poder regalar a tus amigos y familiares con comidas que disfrutarán más. No compres mas comida hecha y delivery, se tu quien le da a tu círculo de amigos una exquisita cena casera y <span class="n">ganate su reconocimiento y admiración</span>, sin tener que pasarte horas en la cocina, ni gastar mucho dinero.</p>
+			<img class="icon_img" src="img/icon11.png" />
+		</div>
+	</div>
+</div>
+
+
+<div class="slide" id="slide5" data-slide="5" data-stellar-background-ratio="0.5">
+	<div class="container clearfix">
+		<div id="content" class="grid_12">
+			<h1><span>Tienes dudas?</span></h1>
+			<p>Siempre surgen preguntas sobre este eBook y su utilidad, estas son algunas de las que solemos recibir de nuestros lectores.</p>
+			<p class="c">- Pero igual tengo que cocinar?!</p>
+			<p>Si, tu seras quien cocine, eso permite que tus comidas sean de <span class="n">la mejor calidad posible</span>, y que <span class="n">mantengas tu presupuesto bajo control</span>. No te olvides que la comida casera es la más saludable si se prepara siguiendo los tips incluidos en el Plan. Cocinar suele ser una actividad placentera, lo que nos estresa es pensar que prepararé, conseguir los ingredientes que no tenemos y armar la lista del mercado. Todo eso es con lo que el Plan te ayudará, <span class="n">quita lo desagradable de cocinar</span>, y dedicate a disfrutar del proceso y el resultado: Comida casera saludable, simple y sabrosa.</p>
+			<p class="c">- Usualmente los ingredientes en las recetas se detallan para 4 personas, la familia tipo. Mi situación es diferente (Cocino solo para mi, o somos yo y mi pareja, o somos una familia numerosa de 6, 8, 10) Seguramente las recetas y lista del mercado en el Plan no me sirvan!</p>
+			<p>Sabemos que hay tantas situaciones familiares como las que la pregunta describe, por eso preparamos <span class="n">una lista del mercado para cada cantidad de comensales</span>! En el plan encontraras una lista de mercado para una persona sola, dos, cuatro, seis, ocho y hasta diez!</p>
+			<p>Y si deseas invitar a comer a tus amigos una noche/día, y necesitas preparar solo una receta para un grupo de más personas que lo normal, <span class="n">incluimos listas de ingredientes en cada receta para todas esas cantidades de comensales</span>. Tratamos de cubrir todas las posibilidades.</p>
+			<p class="c">- Siempre que compro libros de recetas, los ingredientes tienen nombres raros, que no se lo que son, y en mi pais o region los llamamos diferente, es un gran problema porque no puedo encontrar todo lo que necesito!</p>
+			<p>Ufff, tambien nos paso tantas veces! Encontramos recetas con nombres de verduras o cortes de carne que en nuestro país no existen, o no se llaman de la misma manera, es muy frustrante. Por eso en el Plan incluimos un <span class="n">glosario de nombres para cada uno de los países y regiones</span> de las que tenemos conocimiento (y que muchos lectores nos han ayudado a construir! Gracias!!!) de cada uno de los ingredientes listados. De esta manera siempre sabrás de qué vegetal, corte o ingrediente está hablando la receta y la lista del mercado.</p>
+			<p>Por supuesto no podemos incluir todos los nombres, muchos no los sabemos, por eso siempre estamos dispuestos a recibir tu consulta y sugerencias, como también ayudarte a encontrar el nombre en tu región si no esta en el Plan, haremos nuestro mayor esfuerzo para que puedas preparar todas y cada una de las recetas en el libro. Y con tu ayuda mejoramos el Plan para los futuros lectores.</p>
+			<h2 style="font-family:Lobster;font-size:2.2em;margin-top:25px">Aun tienes dudas? Te garantizamos tu satisfacción</h2>
+			<p>No te preocupes, sabemos que incluso cuando confiamos que el Plan es de gran utilidad para muchos, no todos van a encontrar lo que buscaban. Por eso estamos muy tranquilos en otorgar una <span class="n">garantia de satisfaccion</span>. Si compraste el libro y NO estás satisfecha con el resultado te devolveremos tu dinero. Tienes <span class="n">30 días</span> para leer, probar y experimentar el Plan, pero no hagas trampa, sigue el Plan al menos una semana antes de juzgar! Si aun asi no estas satisfecha te devolvemos tu dinero.</p>
+			<p>Estamos confiados en la utilidad del Plan, <span class="n">muchos ya lo probaron y quedaron muy satisfechos</span>.</p>
+			<img class="icon_img" src="img/icon11.png" />
+		</div>
+	</div>
+</div>
+
+
+
+<div class="slide" id="slide6" data-slide="6" data-stellar-background-ratio="0.5">
+	<div class="container clearfix">
+		<div id="content" class="grid_12">
+			<h1 style="font-size:3em">Ok, quiero comprarlo!</h1>
+			<img class="about_img" src="img/maqueta_3d.jpg" alt="" />
+			<p>El costo del libro es realmente bajo, recuerda los beneficios y sabras que <span class="n">puedes ahorrar mucho dinero</span>
+			siguiendo este plan que te ayudará a dejar de comprar comida preparada y te guiará para cocinar de manera relajada y comprando solo lo necesario.</p>
+			<p>Elegi tu medio de pago preferido, si no lo encuentras, contactanos!</p>
+			<p>Gracias por tu interés!</p>
+			<div id="precio-font" class="precio-box-inline">Por solo u$d{{ app.libro1.precio }}!</div>
+		</div>
+		<div id="content" class="grid_12">
+			<div id="mensaje">
+				<p>
+					Elije el medio de pago de tu preferencia, y haz click en el boton.
+				</p>
+			</div>
+			<div class="row payment-buttons clearfix">
+				<div class="payment-button" id="mercadopago-button">
+					<form id="mercadopago-form" action="https://www.mercadopago.com/checkout/init" method="post" enctype="application/x-www-form-urlencoded" target="">
+					    <!-- Autenticación y hash MD5 -->
+					    <input type="hidden" name="client_id" value="7517483027864439"/>
+					    <input type="hidden" name="md5" value=""/>
+
+					    <!-- Datos obligatorios del item -->
+					    <input type="hidden" name="item_title" value="Plan de recetas semanal"/>
+					    <input type="hidden" name="item_quantity" value="1"/>
+					    <input type="hidden" name="item_currency_id" value="USD"/>
+					    <input type="hidden" name="item_unit_price" value="5"/>
+
+					    <!-- Datos opcionales -->
+					    <input type="hidden" name="item_id" value="1"/>
+					    <input type="hidden" name="external_reference" value=""/>
+					    <!-- <input type="hidden" name="item_picture_url" value="imagen_del_item"/>-->
+					    <input type="hidden" name="payer_name" value=""/>
+					    <input type="hidden" name="payer_surname" value=""/>
+					    <input type="hidden" name="payer_email" value=""/>
+					    <input type="hidden" name="back_url_success" value="http://{{ app.request.getHost() }}/callback?gateway=mercadopago&amp;status=exito&amp;transaction_id={{app.session.getId()}}"/>
+					    <input type="hidden" name="back_url_pending" value="http://{{ app.request.getHost() }}/callback?gateway=mercadopago&amp;status=fail&amp;transaction_id={{app.session.getId()}}"/>
+
+					    <!-- Boton de pago -->
+					    <button type="submit" class="lightblue-rn-m-tr" name="MP-Checkout">Mercadopago</button>
+					</form>
+				</div>
+				<div class="payment-button" id="dineromail-button">
+					<form action='https://argentina.dineromail.com/Shop/Shop_Ingreso.asp' method='post' id="dineromail-form">
+					<input type='hidden' name='NombreItem' value='Plan de recetas semanal'>
+					<input type='hidden' name='TipoMoneda' value='2'>
+					<input type='hidden' name='PrecioItem' value='5.00'>
+					<input type='hidden' name='E_Comercio' value='2675965'>
+					<input type='hidden' name='NroItem' value='1'>
+					<input type='hidden' name='image_url' value='http://'>
+					<input type='hidden' name='DireccionExito' value='http://{{ app.request.getHost() }}/callback?gateway=dineromail&amp;status=exito&amp;transaction_id={{app.session.getId()}}'>
+					<input type='hidden' name='DireccionFracaso' value='http://{{ app.request.getHost() }}/callback?gateway=dineromail&amp;status=fail&amp;transaction_id={{app.session.getId()}}'>
+					<input type='hidden' name='DireccionEnvio' value='0'>
+					<input type='hidden' name='Mensaje' value='1'>
+					<input type='hidden' name='MediosPago' value='4,7'>
+					<input type='image' src='https://argentina.dineromail.com/imagenes/botones/comprar-medios_c.gif' border='0' name='submit' alt='Pagar con DineroMail'>
+					</form>
+				</div>
+				<div class="payment-button" id="paypal-button">
+					<form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top" id="paypal-form">
+					<input type="hidden" name="cmd" value="_s-xclick">
+					<input type="hidden" name="hosted_button_id" value="9LBPU5ZPSKWV4">
+					<input type="hidden" name="custom" value="">
+					<input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_buynowCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
+					<img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
+					</form>
+
+
+				</div>
+			</div>
+			<img class="icon_img" src="img/icon12.png" />
+		</div>
+	</div>
+</div>
+
+<div class="slide" id="slide10" data-slide="10" data-stellar-background-ratio="0.5">
+	<div class="container clearfix">
+
+		<div id="content" class="grid_12">
+			<h1 style="font-size:2.7em"><span>Estoy muy contento con el producto, como puedo seguir en contacto?</span></h1>
+			<h2>Esperamos seguir en contacto contigo, para eso preparamos un formulario donde esperamos que nos contactes. Alli podras enviarnos comentarios, buenos o constructivos sobre nuestros productos, y tambien puedes sumarte a la lista de correos para estar al tanto de las novedades; planeamos escribir mas libros!</h2>
+		</div>
+		<div class="clear"></div>
+
+		<div class="grid_3 contact_det_block">
+			<p>Ingresa tus datos y tu mensaje</p>
+
+		</div>
+		<div class="grid_9 omega">
+			<div class="contact_form">
+				<div id="note"></div>
+				<div id="fields">
+					{{ form(contact, {action: path('contact')}) }}
+					<!--<form id="ajax-contact-form" action="">
+						<input type="text" name="name" value="" placeholder="Nombre" />
+						<input type="text" name="subject" value="" placeholder="Tel&eacute;fono" />
+						<input type="text" name="email" value="" placeholder="Email" />
+						<textarea name="message" id="message" placeholder="Mensaje"></textarea>
+						<div class="clear"></div>
+						<input type="reset" class="contact_btn" value="Borrar datos" />
+						<input type="submit" class="contact_btn send_btn" value="Enviar" />
+						<div class="clear"></div>
+					</form>-->
+				</div>
+			</div>
+		</div>
+		<div class="clear"></div>
+
+	</div>
+
+</div>
+
+<div id="footer">
+	<div class="container clearfix">
+		<div class="copyright">Todos los derechos reservados &copy; 2013</div>
+		<div id="back_top"><a class="button" title="" data-slide="1">Ir arriba</a></div>
+	</div>
+</div>
+{% endblock %}

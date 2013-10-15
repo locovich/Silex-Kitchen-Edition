@@ -37,10 +37,20 @@ $app['assetic.output.path_to_js']       = 'js/scripts.js';
 $app['db.options'] = array(
     'driver'   => 'pdo_mysql',
     'host'     => 'localhost',
-    'dbname'   => 'slx',
-    'user'     => 'slx_user',
-    'password' => 'oa78tlkg7aLS/G)',
+    'dbname'   => 'nico_slx',
+    'user'     => 'nico_slx_user',
+    'password' => 'oa78tl$kg7aLS-G*',
 );
 
 // User
 $app['security.users'] = array('nicolas' => array('ROLE_USER', 'LaPiroca'));
+
+// Feedback form
+$app['feedback.options'] = array(
+    'to'   => 'recetasmicocina@gmail.com',
+);
+
+// Libros
+$app['libro1'] = array(
+	'precio' => "5.00",
+);
