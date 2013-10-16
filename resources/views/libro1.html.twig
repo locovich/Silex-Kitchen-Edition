@@ -3,25 +3,6 @@
 
 {% block content %}
 <script type="text/javascript">
-	function ajax_submit_click(form)
-	{
-		var str = $(form).serialize();
-		$.ajax({
-			type: "POST",
-			url: "click",
-			data: str,
-			success: function(msg) {
-				alert(msg);
-				return true;
-			},
-			error: function(msg) {
-				alert(msg);
-				return true;
-			},
-		});
-		return true;
-	}
-
 	$(document).ready(function(){
 		$("#ajax-contact-form").submit(function() {
 			var str = $(this).serialize();
@@ -30,7 +11,6 @@
 				url: "contact",
 				data: str,
 				success: function(msg) {
-					alert(msg)
 					// Message Sent - Show the 'Thank You' message and hide the form
 					if(msg == 'OK') {
 						result = '<div class="notification_ok">Your message has been sent. Thank you!</div>';
@@ -45,15 +25,6 @@
 				},
 			});
 			return false;
-		});
-		$("#mercadolibre-form").submit(function() {
-			return ajax_submit_click($(this));
-		});
-		$("#dineromail-form").submit(function() {
-			return ajax_submit_click($(this));
-		});
-		$("#paypal-form").submit(function() {
-			return ajax_submit_click($(this));
 		});
 	});
 </script>
@@ -211,8 +182,8 @@
 					    <input type="hidden" name="payer_name" value=""/>
 					    <input type="hidden" name="payer_surname" value=""/>
 					    <input type="hidden" name="payer_email" value=""/>
-					    <input type="hidden" name="back_url_success" value="http://{{ app.request.getHost() }}/callback?gateway=mercadopago&amp;status=exito&amp;transaction_id={{app.session.getId()}}"/>
-					    <input type="hidden" name="back_url_pending" value="http://{{ app.request.getHost() }}/callback?gateway=mercadopago&amp;status=fail&amp;transaction_id={{app.session.getId()}}"/>
+					    <input type="hidden" name="back_url_success" value="http://{{ app.request.getHost() }}/track?gateway=mercadopago&amp;status=succ&amp;session={{app.session.getId()}}"/>
+					    <input type="hidden" name="back_url_pending" value="http://{{ app.request.getHost() }}/track?gateway=mercadopago&amp;status=fail&amp;session={{app.session.getId()}}"/>
 
 					    <!-- Boton de pago -->
 					    <button type="submit" class="lightblue-rn-m-tr" name="MP-Checkout">Mercadopago</button>
@@ -226,8 +197,8 @@
 					<input type='hidden' name='E_Comercio' value='2675965'>
 					<input type='hidden' name='NroItem' value='1'>
 					<input type='hidden' name='image_url' value='http://'>
-					<input type='hidden' name='DireccionExito' value='http://{{ app.request.getHost() }}/callback?gateway=dineromail&amp;status=exito&amp;transaction_id={{app.session.getId()}}'>
-					<input type='hidden' name='DireccionFracaso' value='http://{{ app.request.getHost() }}/callback?gateway=dineromail&amp;status=fail&amp;transaction_id={{app.session.getId()}}'>
+					<input type='hidden' name='DireccionExito' value='http://{{ app.request.getHost() }}/track?gateway=dineromail&amp;status=succ&amp;session={{app.session.getId()}}'>
+					<input type='hidden' name='DireccionFracaso' value='http://{{ app.request.getHost() }}/track?gateway=dineromail&amp;status=fail&amp;session={{app.session.getId()}}'>
 					<input type='hidden' name='DireccionEnvio' value='0'>
 					<input type='hidden' name='Mensaje' value='1'>
 					<input type='hidden' name='MediosPago' value='4,7'>

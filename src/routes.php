@@ -6,10 +6,40 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Validator\Constraints as Assert;
 
 $app->match('/libro', function(Request $request) use ($app) {
+	// Map
+	$data_set = array('session'=>'','ip'=>'','ua'=>'','source'=>'','page'=>'','gateway'=>'','status'=>'','created'=>date('Y-m-d H:i:s'));
+	// GET
+	$tmp_data_get = $request->query->all();
+	$data_get = array();
+	foreach ($data_set as $key => $value)
+		if (array_key_exists($key, $tmp_data_get))
+			$data_get[$key] = $tmp_data_get[$key];
+	// Context
+	$ip = $request->getClientIp();
+	$ua = $request->headers->get('User-Agent');
+	// Session
+	$session = $app['session']->getId();
 
-	$data = $request->query->all();
+	if( !$data_session = $app['session']->get('libro') )
+		$data_session = array();
+	// DB
+	if( !$data_db = $app['db']->fetchAssoc('SELECT ' . implode(',', array_keys($data_set)) . ' FROM tracker WHERE session = ?', array($session)))
+		$data_db = array();
+	// Merge all
+	$to_merge = array('ip' => $ip, 'ua' => $ua, 'session' => $session);
+	$data = array_merge($data_set, $data_db, $data_session, $to_merge, $data_get);
+
+	// Insert in DB
+	try{
+		$app['db']->insert('tracker',$data);
+	}
+	catch(Exception $e) {
+		$app['monolog']->addError($e->getMessage());
+		$message = "ERROR";
+	}
+
 	$page_number = isset( $data['page'] ) ? $data['page'] : '1';
-	$app['session']->set('libro'.$page_number, $data);
+	$app['session']->set('libro', $data);
 
 	$builder = $app['form.factory']->createBuilder('form');
 	$form = $builder
@@ -22,6 +52,44 @@ $app->match('/libro', function(Request $request) use ($app) {
 
 	return $app['twig']->render('libro'.$page_number.'.html.twig', array('contact' => $form->createView()));
 })->bind('libro');
+
+$app->match('/track', function(Request $request) use ($app) {
+	// Map
+	$data_set = array('session'=>'','ip'=>'','ua'=>'','source'=>'','page'=>'','gateway'=>'','status'=>'','created'=>date('Y-m-d H:i:s'));
+	// GET
+	$tmp_data_get = $request->query->all();
+	$data_get = array();
+	foreach ($data_set as $key => $value)
+		if (array_key_exists($key, $tmp_data_get))
+			$data_get[$key] = $tmp_data_get[$key];
+	// Context
+	$ip = $request->getClientIp();
+	$ua = $request->headers->get('User-Agent');
+	// Session
+	$session = $app['session']->getId();
+	if( !$data_session = $app['session']->get('libro') )
+		$data_session = array();
+	// DB
+	if (!$data_db = $app['db']->fetchAssoc('SELECT ' . implode(',', array_keys($data_set)) . ' FROM tracker WHERE session = ?', array($session)))
+		$data_db = array();
+	// Merge all
+	$to_merge = Array('ip' => $ip, 'ua' => $ua, 'session' => $session);
+	$data = array_merge($data_set, $data_db, $to_merge, $data_session, $data_get);
+
+	$message = 'ok';
+
+	// Insert in DB
+	try{
+		$app['db']->insert('tracker',$data);
+	}
+	catch(Exception $e) {
+		$app['monolog']->addError($e->getMessage());
+		$message = "ERROR";
+	}
+	
+	return $app['twig']->render('track.html.twig', array('message' => $message));
+})->bind('track');
+
 
 $app->post('/contact', function(Request $request) use ($app) {
 
@@ -56,140 +124,6 @@ $app->post('/contact', function(Request $request) use ($app) {
 	}
 	return $app['twig']->render('contact.html.twig', array('return'=>$return));
 })->bind('contact');
-
-
-$app->match('/', function() use ($app) {
-    $app['session']->getFlashBag()->add('warning', 'Warning flash message');
-    $app['session']->getFlashBag()->add('info', 'Info flash message');
-    $app['session']->getFlashBag()->add('success', 'Success flash message');
-    $app['session']->getFlashBag()->add('error', 'Error flash message');
-
-    return $app['twig']->render('index.html.twig');
-})->bind('homepage');
-
-$app->match('/login', function(Request $request) use ($app) {
-    $form = $app['form.factory']->createBuilder('form')
-        ->add('username', 'text', array('label' => 'Username', 'data' => $app['session']->get('_security.last_username')))
-        ->add('password', 'password', array('label' => 'Password'))
-        ->getForm()
-    ;
-
-    return $app['twig']->render('login.html.twig', array(
-        'form'  => $form->createView(),
-        'error' => $app['security.last_error']($request),
-    ));
-})->bind('login');
-
-$app->match('/doctrine', function() use ($app) {
-    return $app['twig']->render(
-        'doctrine.html.twig',
-        array(
-            'posts' => $app['db']->fetchAll('SELECT * FROM post')
-        )
-    );
-})->bind('doctrine');
-
-$app->match('/form', function(Request $request) use ($app) {
-
-    $builder = $app['form.factory']->createBuilder('form');
-    $choices = array('choice a', 'choice b', 'choice c');
-
-    $form = $builder
-        ->add(
-            $builder->create('sub-form', 'form')
-                ->add('subformemail1', 'email', array(
-                    'constraints' => array(new Assert\NotBlank(), new Assert\Email()),
-                    'attr'        => array('placeholder' => 'email constraints'),
-                    'label'       => 'A custom label : ',
-                ))
-                ->add('subformtext1', 'text')
-        )
-        ->add('text1', 'text', array(
-            'constraints' => new Assert\NotBlank(),
-            'attr'        => array('placeholder' => 'not blank constraints')
-        ))
-        ->add('text2', 'text', array('attr' => array('class' => 'span1', 'placeholder' => '.span1')))
-        ->add('text3', 'text', array('attr' => array('class' => 'span2', 'placeholder' => '.span2')))
-        ->add('text4', 'text', array('attr' => array('class' => 'span3', 'placeholder' => '.span3')))
-        ->add('text5', 'text', array('attr' => array('class' => 'span4', 'placeholder' => '.span4')))
-        ->add('text6', 'text', array('attr' => array('class' => 'span5', 'placeholder' => '.span5')))
-        ->add('text8', 'text', array('disabled' => true, 'attr' => array('placeholder' => 'disabled field')))
-        ->add('textarea', 'textarea')
-        ->add('email', 'email')
-        ->add('integer', 'integer')
-        ->add('money', 'money')
-        ->add('number', 'number')
-        ->add('password', 'password')
-        ->add('percent', 'percent')
-        ->add('search', 'search')
-        ->add('url', 'url')
-        ->add('choice1', 'choice',  array(
-            'choices'  => $choices,
-            'multiple' => true,
-            'expanded' => true
-        ))
-        ->add('choice2', 'choice',  array(
-            'choices'  => $choices,
-            'multiple' => false,
-            'expanded' => true
-        ))
-        ->add('choice3', 'choice',  array(
-            'choices'  => $choices,
-            'multiple' => true,
-            'expanded' => false
-        ))
-        ->add('choice4', 'choice',  array(
-            'choices'  => $choices,
-            'multiple' => false,
-            'expanded' => false
-        ))
-        ->add('country', 'country')
-        ->add('language', 'language')
-        ->add('locale', 'locale')
-        ->add('timezone', 'timezone')
-        ->add('date', 'date')
-        ->add('datetime', 'datetime')
-        ->add('time', 'time')
-        ->add('birthday', 'birthday')
-        ->add('checkbox', 'checkbox')
-        ->add('file', 'file')
-        ->add('radio', 'radio')
-        ->add('password_repeated', 'repeated', array(
-            'type'            => 'password',
-            'invalid_message' => 'The password fields must match.',
-            'options'         => array('required' => true),
-            'first_options'   => array('label' => 'Password'),
-            'second_options'  => array('label' => 'Repeat Password'),
-        ))
-        ->add('submit', 'submit')
-        ->getForm()
-    ;
-
-    if ($request->isMethod('POST')) {
-        if ($form->submit($request)->isValid()) {
-            $app['session']->getFlashBag()->add('success', 'The form is valid');
-        } else {
-            $form->addError(new FormError('This is a global error'));
-            $app['session']->getFlashBag()->add('info', 'The form is bind, but not valid');
-        }
-    }
-
-    return $app['twig']->render('form.html.twig', array('form' => $form->createView()));
-})->bind('form');
-
-$app->match('/logout', function() use ($app) {
-    $app['session']->clear();
-
-    return $app->redirect($app['url_generator']->generate('homepage'));
-})->bind('logout');
-
-$app->get('/page-with-cache', function() use ($app) {
-    $response = new Response($app['twig']->render('page-with-cache.html.twig', array('date' => date('Y-M-d h:i:s'))));
-    $response->setTtl(10);
-
-    return $response;
-})->bind('page_with_cache');
-
 
 $app->error(function (\Exception $e, $code) use ($app) {
     if ($app['debug']) {

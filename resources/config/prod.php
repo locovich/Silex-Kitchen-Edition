@@ -44,13 +44,3 @@ $app['db.options'] = array(
 
 // User
 $app['security.users'] = array('nicolas' => array('ROLE_USER', 'LaPiroca'));
-
-// Feedback form
-$app['feedback.options'] = array(
-    'to'   => 'recetasmicocina@gmail.com',
-);
-
-// Libros
-$app['libro1'] = array(
-	'precio' => "5.00",
-);
