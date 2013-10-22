@@ -26,6 +26,9 @@
 			});
 			return false;
 		});
+		$("#btn_mercadopago").click(function() {
+			$(document).scrollTop(0);
+		});
 	});
 </script>
 
@@ -64,8 +67,13 @@
 					<p>Desayuno, Almuerzo, Merienda y Cena<br>
 					Con tips y cantidades precisas para todos los d&iacute;as</p>
 				</div>
-				<div class='contenido'>
-				<a style="margin-top:-100px" class="button" title="" data-slide="6">Comprar</a>
+				<div class='buttons'>
+					<div class='contenido'>
+						<a style="margin-top:-100px" class="button" title="" data-slide="2">Saber Mas</a>
+					</div>
+					<div class='contenido'>
+						<a style="margin-top:-100px" class="button" title="" data-slide="6">Comprar</a>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -163,58 +171,40 @@
 				</p>
 			</div>
 			<div class="row payment-buttons clearfix">
-				<div class="payment-button" id="mercadopago-button">
-					<form id="mercadopago-form" action="https://www.mercadopago.com/checkout/init" method="post" enctype="application/x-www-form-urlencoded" target="">
-					    <!-- Autenticación y hash MD5 -->
-					    <input type="hidden" name="client_id" value="7517483027864439"/>
-					    <input type="hidden" name="md5" value=""/>
-
-					    <!-- Datos obligatorios del item -->
-					    <input type="hidden" name="item_title" value="Plan de recetas semanal"/>
-					    <input type="hidden" name="item_quantity" value="1"/>
-					    <input type="hidden" name="item_currency_id" value="USD"/>
-					    <input type="hidden" name="item_unit_price" value="5"/>
-
-					    <!-- Datos opcionales -->
-					    <input type="hidden" name="item_id" value="1"/>
-					    <input type="hidden" name="external_reference" value=""/>
-					    <!-- <input type="hidden" name="item_picture_url" value="imagen_del_item"/>-->
-					    <input type="hidden" name="payer_name" value=""/>
-					    <input type="hidden" name="payer_surname" value=""/>
-					    <input type="hidden" name="payer_email" value=""/>
-					    <input type="hidden" name="back_url_success" value="http://{{ app.request.getHost() }}/track?gateway=mercadopago&amp;status=succ&amp;session={{app.session.getId()}}"/>
-					    <input type="hidden" name="back_url_pending" value="http://{{ app.request.getHost() }}/track?gateway=mercadopago&amp;status=fail&amp;session={{app.session.getId()}}"/>
-
-					    <!-- Boton de pago -->
-					    <button type="submit" class="lightblue-rn-m-tr" name="MP-Checkout">Mercadopago</button>
-					</form>
+				<div class="payment-button-wrapper">
+					<div class="payment-button" id="mercadopago-button">
+						<a href="{{ app.mercadopago.response.init_point }}?>" name="MP-Checkout" class="blue-rn-m" id="btn_mercadopago">Comprar con MercadoPago</a>
+						<script type="text/javascript" src="https://www.mercadopago.com/org-img/jsapi/mptools/buttons/render.js"></script>
+					</div>
 				</div>
-				<div class="payment-button" id="dineromail-button">
-					<form action='https://argentina.dineromail.com/Shop/Shop_Ingreso.asp' method='post' id="dineromail-form">
-					<input type='hidden' name='NombreItem' value='Plan de recetas semanal'>
-					<input type='hidden' name='TipoMoneda' value='2'>
-					<input type='hidden' name='PrecioItem' value='5.00'>
-					<input type='hidden' name='E_Comercio' value='2675965'>
-					<input type='hidden' name='NroItem' value='1'>
-					<input type='hidden' name='image_url' value='http://'>
-					<input type='hidden' name='DireccionExito' value='http://{{ app.request.getHost() }}/track?gateway=dineromail&amp;status=succ&amp;session={{app.session.getId()}}'>
-					<input type='hidden' name='DireccionFracaso' value='http://{{ app.request.getHost() }}/track?gateway=dineromail&amp;status=fail&amp;session={{app.session.getId()}}'>
-					<input type='hidden' name='DireccionEnvio' value='0'>
-					<input type='hidden' name='Mensaje' value='1'>
-					<input type='hidden' name='MediosPago' value='4,7'>
-					<input type='image' src='https://argentina.dineromail.com/imagenes/botones/comprar-medios_c.gif' border='0' name='submit' alt='Pagar con DineroMail'>
-					</form>
+				<div class="payment-button-wrapper">
+					<div class="payment-button" id="dineromail-button">
+						<form action='https://argentina.dineromail.com/Shop/Shop_Ingreso.asp' method='post' id="dineromail-form">
+						<input type='hidden' name='NombreItem' value='Plan de recetas semanal'>
+						<input type='hidden' name='TipoMoneda' value='2'>
+						<input type='hidden' name='PrecioItem' value='5.00'>
+						<input type='hidden' name='E_Comercio' value='3493622'>
+						<input type='hidden' name='NroItem' value='1'>
+						<input type='hidden' name='DireccionExito' value='http://{{ app.request.getHost() }}/track?gateway=dineromail&amp;status=succ&amp;session={{app.session.getId()}}'>
+						<input type='hidden' name='DireccionFracaso' value='http://{{ app.request.getHost() }}/track?gateway=dineromail&amp;status=fail&amp;session={{app.session.getId()}}'>
+						<input type='hidden' name='DireccionEnvio' value='0'>
+						<input type='hidden' name='Mensaje' value='1'>
+						<input type='hidden' name='MediosPago' value='4,5,6,14,15,16,17,18'>
+						<input type='image' src='https://argentina.dineromail.com/imagenes/botones/comprar-tarjetas_bn.gif?dmbypayu' border='0' name='submit' alt='Pagar con DineroMail'>
+						</form>
+					</div>
 				</div>
-				<div class="payment-button" id="paypal-button">
-					<form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top" id="paypal-form">
-					<input type="hidden" name="cmd" value="_s-xclick">
-					<input type="hidden" name="hosted_button_id" value="9LBPU5ZPSKWV4">
-					<input type="hidden" name="custom" value="">
-					<input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_buynowCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
-					<img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
-					</form>
-
-
+				<div class="payment-button-wrapper">
+					<div class="payment-button" id="paypal-button">
+						<form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top" id="paypal-form">
+						<img src="https://www.paypalobjects.com/webstatic/mktg/logo/pp_cc_mark_37x23.jpg" border="0" alt="PayPal Logo">
+						<input type="hidden" name="cmd" value="_s-xclick">
+						<input type="hidden" name="hosted_button_id" value="9LBPU5ZPSKWV4">
+						<input type="hidden" name="custom" value="">
+						<input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_buynowCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
+						<img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
+						</form>
+					</div>
 				</div>
 			</div>
 			<img class="icon_img" src="img/icon12.png" />
