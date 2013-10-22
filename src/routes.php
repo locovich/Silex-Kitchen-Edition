@@ -5,42 +5,29 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Validator\Constraints as Assert;
 
+require_once __DIR__.'/mercadopago/mercadopago.php';
+require_once __DIR__.'/model/track.php';
+
 $app->match('/libro', function(Request $request) use ($app) {
-	// Map
-	$data_set = array('session'=>'','ip'=>'','ua'=>'','source'=>'','page'=>'','gateway'=>'','status'=>'','created'=>date('Y-m-d H:i:s'));
-	// GET
-	$tmp_data_get = $request->query->all();
-	$data_get = array();
-	foreach ($data_set as $key => $value)
-		if (array_key_exists($key, $tmp_data_get))
-			$data_get[$key] = $tmp_data_get[$key];
-	// Context
-	$ip = $request->getClientIp();
-	$ua = $request->headers->get('User-Agent');
-	// Session
-	$session = $app['session']->getId();
 
-	if( !$data_session = $app['session']->get('libro') )
-		$data_session = array();
-	// DB
-	if( !$data_db = $app['db']->fetchAssoc('SELECT ' . implode(',', array_keys($data_set)) . ' FROM tracker WHERE session = ?', array($session)))
-		$data_db = array();
-	// Merge all
-	$to_merge = array('ip' => $ip, 'ua' => $ua, 'session' => $session);
-	$data = array_merge($data_set, $data_db, $data_session, $to_merge, $data_get);
-
+	$model_track = new Track($app, $request);
+	$model_track->getDataFromRequest();
+	
 	// Insert in DB
 	try{
-		$app['db']->insert('tracker',$data);
+		$model_track->insert();
 	}
 	catch(Exception $e) {
 		$app['monolog']->addError($e->getMessage());
 		$message = "ERROR";
 	}
 
-	$page_number = isset( $data['page'] ) ? $data['page'] : '1';
-	$app['session']->set('libro', $data);
+	$track_data = $model_track->get();
+	$page_number = $model_track->getProp('page') ? $model_track->getProp('page') : '1';
+	$libro = 'libro'.$page_number;
+	$app['session']->set($libro, $track_data);
 
+	// Form
 	$builder = $app['form.factory']->createBuilder('form');
 	$form = $builder
 		->add('name', 'text', array('constraints' => new Assert\NotBlank()))
@@ -50,46 +37,82 @@ $app->match('/libro', function(Request $request) use ($app) {
 		->add('submit', 'submit')
 		->getForm();
 
+	// Set up mercadopago
+	array_merge(
+		$app[$libro]['mercadopago'],
+		array(
+			'external_reference'=>$app['session']->getId(),
+		)
+	);
+	$mercadopago = new MP(MP_CLIENT_ID,MP_CLIENT_SECRET);
+	$app['mercadopago'] = $mercadopago->create_preference($app[$libro]['mercadopago']);
+
 	return $app['twig']->render('libro'.$page_number.'.html.twig', array('contact' => $form->createView()));
 })->bind('libro');
 
 $app->match('/track', function(Request $request) use ($app) {
-	// Map
-	$data_set = array('session'=>'','ip'=>'','ua'=>'','source'=>'','page'=>'','gateway'=>'','status'=>'','created'=>date('Y-m-d H:i:s'));
-	// GET
-	$tmp_data_get = $request->query->all();
-	$data_get = array();
-	foreach ($data_set as $key => $value)
-		if (array_key_exists($key, $tmp_data_get))
-			$data_get[$key] = $tmp_data_get[$key];
-	// Context
-	$ip = $request->getClientIp();
-	$ua = $request->headers->get('User-Agent');
-	// Session
-	$session = $app['session']->getId();
-	if( !$data_session = $app['session']->get('libro') )
-		$data_session = array();
-	// DB
-	if (!$data_db = $app['db']->fetchAssoc('SELECT ' . implode(',', array_keys($data_set)) . ' FROM tracker WHERE session = ?', array($session)))
-		$data_db = array();
-	// Merge all
-	$to_merge = Array('ip' => $ip, 'ua' => $ua, 'session' => $session);
-	$data = array_merge($data_set, $data_db, $to_merge, $data_session, $data_get);
+
+	$model_track = new Track($app, $request);
+	$model_track->getDataFromRequest();
 
 	$message = 'ok';
 
 	// Insert in DB
 	try{
-		$app['db']->insert('tracker',$data);
+		$model_track->insert();
 	}
 	catch(Exception $e) {
 		$app['monolog']->addError($e->getMessage());
 		$message = "ERROR";
 	}
-	
+
+	$track_data = $model_track->get();
+
 	return $app['twig']->render('track.html.twig', array('message' => $message));
 })->bind('track');
 
+$app->match('/mercadopago', function(Request $request) use ($app){
+	$topic = $request->get('topic');
+	$id = $request->get('id');
+	// Set up mercadopago
+	$mercadopago = new MP(MP_CLIENT_ID,MP_CLIENT_SECRET);
+	// Get the payment reported by the IPN. Glossary of attributes response in https://developers.mercadopago.com
+	try{
+		$payment_info = $mercadopago->get_payment_info($id);
+		// Manage MP response
+		$success = false;
+		$message = "OK";
+		if ($payment_info["status"] == 200) {
+			$app['monolog']->addInfo("MercadoPago Response:" . serialize($payment_info["response"]));
+			if (isset($payment_info["response"]["external_reference"])) {
+				$model_track = new Track($app, $request);
+				$model_track->get($payment_info["response"]["external_reference"]);
+				$model_track->setProp('email_buyer', $payment_info["response"]["payer"]["email"]);
+				$model_track->setProp('status', $payment_info["response"]["status"]);
+				$model_track->setProp('gateway_id', $payment_info["response"]["id"]);
+				$model_track->insert();
+				$success = true;
+			}
+			else {
+				$message = "No external_reference present in response from MP";
+			}
+		}
+		else {
+			$message = "HTTP Status code != 200 in response from MP";
+		}
+		if(!$success)
+		{
+			$app['monolog']->addError("Error al checkear una notificacion de MercadoPago. Message: ".$message." || Response:" . serialize($payment_info["response"]));
+			header("HTTP/1.1 500 Internal Server Error");
+			Throw($message);
+		}
+	}
+	catch(Exception $e) {
+		$app['monolog']->addError("File: " . __FILE__ . " || Line: " . __LINE__ . " || Exception Message: " . $e->getMessage());
+		$message = "ERROR";
+	}
+	return $app['twig']->render('mercadopago.html.twig', array('message' => $message));
+})->bind("mercadopago");
 
 $app->post('/contact', function(Request $request) use ($app) {
 

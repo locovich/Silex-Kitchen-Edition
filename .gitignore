@@ -3,3 +3,4 @@
 /resources/log/*
 /vendor/
 /web/assets/*
+/resources/config/credentials.php
