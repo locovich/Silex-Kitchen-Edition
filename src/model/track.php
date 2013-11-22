@@ -15,12 +15,14 @@ class Track {
 	protected $app = NULL;
 	protected $request = NULL;
 	protected $data = array(
+					'id'=>'',
 					'session'=>'',
 					'ip'=>'',
 					'ua'=>'',
 					'source'=>'',
 					'page'=>'',
 					'gateway'=>'',
+					'gateway_id'=>'',
 					'status'=>'',
 					'buyer_email'=>'',
 					'created'=>'',
@@ -45,8 +47,7 @@ class Track {
 		$ua = $request->headers->get('User-Agent');
 		// Session
 		$session = $this->app['session']->getId();
-
-		if( !$data_session = $this->app['session']->get('libro') )
+		if( !($data_session = $this->app['session']->get($this->app['libro.key'])))
 			$data_session = array();
 		// DB
 		if( !$data_db = $this->get($session))
@@ -56,11 +57,29 @@ class Track {
 		$this->data = array_merge($this->data, $data_db, $data_session, $to_merge, $data_get);
 	}
 
+	public function save()
+	{
+		if(isset($this->data['id']))
+		{
+			$this->update();
+		}
+		else
+		{
+			$this->insert();
+		}
+	}
+
 	public function insert()
 	{
 		return $this->app['db']->insert($this->table,$this->data);
 	}
 
+	public function update()
+	{
+		$id_param = array('id'=>$this->data['id']);
+		return $this->app['db']->update($this->table,$this->data, $id_param);
+	}
+	
 	public function get($session=NULL)
 	{
 		if(NULL===$session)
