@@ -3,6 +3,7 @@
 // Local
 $app['locale'] = 'es';
 $app['session.default_locale'] = $app['locale'];
+$app['session.storage.options'] = array( 'cookie_lifetime' => 604800 );
 $app['translator.messages'] = array(
     'fr' => __DIR__.'/../resources/locales/fr.yml',
     'es' => __DIR__.'/../resources/locales/es.yml',
@@ -44,13 +45,3 @@ $app['db.options'] = array(
 
 // User
 $app['security.users'] = array('nicolas' => array('ROLE_USER', 'LaPiroca'));
-
-// Paypal config
-$app['paypal.conf'] = array(
-	'client_id' => PP_CLIENT_ID,
-	'client_secret' => PP_CLIENT_SECRET,
-	'http.ConnectionTimeOut' => 30,
-	'log.LogEnabled' => true,
-	'log.FileName' => '../resources/log/PayPal.log',
-	'log.LogLevel' => 'ERROR'
-);
