@@ -26,6 +26,7 @@
         "symfony/translation"   : "~2.3",
         "symfony/twig-bridge"   : "~2.3",
         "symfony/validator"     : "~2.3",
+	"symfony/web-profiler-bundle": ">=2.2,<2.4-dev",
         "symfony/yaml"          : "~2.3",
         "twig/twig"             : "~1.10",
         "silex/web-profiler"    : "~1.0.1",
@@ -43,7 +44,10 @@
     },
     "autoload": {
         "psr-0": {
-            "SKE": "src/"
+            "SKE": "src/",
+            "Controllers": "src/",
+	    "Models": "src/",
+	    "Mercadopago": "src/"
         }
     }
 }

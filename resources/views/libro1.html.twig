@@ -173,7 +173,7 @@
 			<div class="row payment-buttons clearfix">
 				<div class="payment-button-wrapper">
 					<div class="payment-button" id="mercadopago-button">
-						<a href="http://{{ app.request.getHost() }}/mercadopago" name="MP-Checkout" class="blue-rn-m" id="btn_mercadopago">Comprar con MercadoPago</a>
+						<a href="{{ mercadopago_init_point }}" name="MP-Checkout" class="blue-rn-m" id="btn_mercadopago">Comprar con MercadoPago</a>
 						<script type="text/javascript" src="https://www.mercadopago.com/org-img/jsapi/mptools/buttons/render.js"></script>
 					</div>
 				</div>
@@ -185,7 +185,7 @@
 						<input type='hidden' name='PrecioItem' value='5.00'>
 						<input type='hidden' name='E_Comercio' value='3493622'>
 						<input type='hidden' name='NroItem' value='1'>
-						<input type='hidden' name='DireccionExito' value='http://{{ app.request.getHost() }}/track?gateway=dineromail&amp;status=succ&amp;session={{app.session.getId()}}'>
+						<input type='hidden' name='DireccionExito' value='http://{{ app.request.getHost() }}/track?gateway=dineromail&amp;status=success&amp;session={{app.session.getId()}}'>
 						<input type='hidden' name='DireccionFracaso' value='http://{{ app.request.getHost() }}/track?gateway=dineromail&amp;status=fail&amp;session={{app.session.getId()}}'>
 						<input type='hidden' name='DireccionEnvio' value='0'>
 						<input type='hidden' name='Mensaje' value='1'>
@@ -196,17 +196,8 @@
 				</div>
 				<div class="payment-button-wrapper">
 					<div class="payment-button" id="paypal-button">
-					<!--
-					<form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
-						<img src="https://www.paypalobjects.com/webstatic/mktg/logo/pp_cc_mark_37x23.jpg" border="0" alt="PayPal Logo">
-						<input type="hidden" name="cmd" value="_s-xclick">
-						<input type="hidden" name="hosted_button_id" value="XWXESRM5EY97E">
-						<input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_buynowCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
-						<img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
-					</form>
-					-->
 					<img src="https://www.paypalobjects.com/webstatic/mktg/logo/pp_cc_mark_37x23.jpg" border="0" alt="PayPal Logo">
-					<a href="http://{{ app.request.getHost() }}/paypal"><image src="https://www.paypalobjects.com/en_US/i/btn/btn_buynowCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
+					<a href="http://{{ app.request.getHost() }}/paypal/create"><image src="https://www.paypalobjects.com/en_US/i/btn/btn_buynowCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!"></a>
 					<img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
 					</div>
 				</div>

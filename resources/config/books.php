@@ -33,18 +33,24 @@ $app['mercadopago'] = array(
 
 // Libros
 $app['libro1'] = array(
+	'nombre' => 'Plan de recetas semanal',
+	'descripcion' => 'Recibiras el eBook Plan de Recetas en tu email al finalizar la compra.',
 	'precio' => "5.00",
+	'moneda' => 'USD',
 	'mercadopago' => array(
 		"items" => array(
 			array(
 			    "title" => "Plan de recetas semanal",
 			    "quantity" => 1,
 			    "currency_id" => "USD",
-			    "unit_price" => 5.00
+			    "unit_price" => 5.00,
+			    "sku" => 1,
 			)
 		),
 		"external_reference" => 'Replaced with session_id on RunTime',
-	)
+	),
+	'paypal_seller_email' => ( $app['debug'] ? 'gpmac_1231902686_biz@paypal.com' : 'recetasmicocina@gmail.com' ),
+	'paypal_completed_payment_status' => 'Completed',
 );
 
 
