@@ -33,15 +33,3 @@ $app['assetic.input.path_to_js']        = array(
     $app['assetic.input.path_to_assets'] . '/js/script.js',
 );
 $app['assetic.output.path_to_js']       = 'js/scripts.js';
-
-// Doctrine (db)
-$app['db.options'] = array(
-    'driver'   => 'pdo_mysql',
-    'host'     => 'localhost',
-    'dbname'   => 'nico_slx',
-    'user'     => 'nico_slx_user',
-    'password' => 'oa78tl$kg7aLS-G*',
-);
-
-// User
-$app['security.users'] = array('nicolas' => array('ROLE_USER', 'LaPiroca'));

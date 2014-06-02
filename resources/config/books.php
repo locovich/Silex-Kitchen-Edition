@@ -4,6 +4,7 @@
  * Configuration items on $app
  */
 
+// Default product
 $app['default.page'] = 1;
 $app['default.source'] = 'default';
 $app['redirect.default'] = '/libro?page='.$app['default.page'].'&source='.$app['default.source'];

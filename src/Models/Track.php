@@ -61,6 +61,9 @@ class Track {
 		// Merge all
 		$to_merge = array('ip' => $ip, 'ua' => $ua, 'session' => $session, 'created' => date('Y-m-d H:i:s'));
 		$this->data = array_merge($this->data, $data_db, $data_session, $to_merge, $data_get);
+
+		// We return all the data (Libro::show uses this)
+		return $this->data;
 	}
 
 	public function secure_save()
@@ -68,6 +71,7 @@ class Track {
 		$return = true;
 		// Insert in DB
 		try{
+			$this->app['monolog']->addDebug('Saving: ' . serialize(var_export($this->data,1)));
 			$this->save();
 		}
 		catch(Exception $e) {
@@ -79,7 +83,7 @@ class Track {
 
 	public function save()
 	{
-		if(isset($this->data['id']))
+		if(isset($this->data['id']) && !empty($this->data['id']))
 		{
 			$this->update();
 		}
