@@ -22,6 +22,8 @@ $app->register(new ValidatorServiceProvider());
 $app->register(new FormServiceProvider());
 $app->register(new UrlGeneratorServiceProvider());
 
+$app->register(new ServiceControllerServiceProvider());
+
 $app->register(new SecurityServiceProvider(), array(
     'security.firewalls' => array(
         'admin' => array(
@@ -54,7 +56,7 @@ $app['translator'] = $app->share($app->extend('translator', function($translator
 $app->register(new MonologServiceProvider(), array(
     'monolog.logfile' => __DIR__.'/../resources/log/app.log',
     'monolog.name'    => 'app',
-    'monolog.level'   => 300 // = Logger::WARNING
+    'monolog.level'   => 100 // = 100->Debug 300->Warning 600->Emergency
 ));
 
 $app->register(new TwigServiceProvider(), array(
@@ -67,7 +69,6 @@ $app->register(new TwigServiceProvider(), array(
 ));
 
 if ($app['debug'] && isset($app['cache.path'])) {
-    $app->register(new ServiceControllerServiceProvider());
     $app->register(new WebProfilerServiceProvider(), array(
         'profiler.cache_dir' => $app['cache.path'].'/profiler',
     ));

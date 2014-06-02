@@ -1,0 +1,20 @@
+<VirtualHost *:80>
+	DocumentRoot /var/www/web
+	<Directory /var/www/web>
+		AuthType none
+		Options Indexes FollowSymLinks MultiViews
+		Allow from all
+		AllowOverride All
+	</Directory>
+	ServerName aff.recetasmicocina.local
+
+	ErrorLog ${APACHE_LOG_DIR}/error_silex.log
+
+	# Possible values include: debug, info, notice, warn, error, crit,
+	# alert, emerg.
+	LogLevel error
+
+	CustomLog ${APACHE_LOG_DIR}/access_silex.log combined
+	SetEnv ENVIRONMENT development
+</VirtualHost>
+

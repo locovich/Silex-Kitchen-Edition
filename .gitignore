@@ -3,3 +3,5 @@
 /resources/log/*
 /vendor/
 /web/assets/*
+/.vagrant/*
+/resources/config/credentials.php

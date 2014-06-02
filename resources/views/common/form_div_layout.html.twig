@@ -4,7 +4,7 @@
 
 {% block form %}
 {% spaceless %}
-    {{ form_start(form, {attr: {class: 'form-horizontal', novalidate: 'novalidate'}}) }}
+    {{ form_start(form, {attr: {class: 'form-horizontal', novalidate: 'novalidate', id: 'ajax-contact-form'}}) }}
         {{ form_widget(form) }}
     {{ form_end(form) }}
 {% endspaceless %}
